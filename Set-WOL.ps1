@@ -31,47 +31,30 @@ Param (
 	[Parameter(Mandatory = $True)]
 	[string]$CurrentValue
 )
-
 $AllowedCurrentValues = @("Disabled", "LanOnly", "WlanOnly", "LanWlan", "LanWithPxeBoot")
-
 ForEach ($Value in $AllowedCurrentValues)
 {
-	
-	Write-Output $Value
-	
 	If ($CurrentValue -eq $Value)
 	{
-		
 		$ModuleExists = Get-Module -ListAvailable -Name DellBIOSProvider
-		
 		If ($ModuleExists)
 		{
-			
 			Import-Module DellBiosProvider
 			Set-Location DellSMBios:
-			
 			$WakeOnLanState = Get-Item .\PowerManagement\WakeOnLan
-			
 			If ($WakeOnLanState.CurrentValue -ne $CurrentValue)
 			{
-				
 				Set-Item .\PowerManagement\WakeOnLan $CurrentValue
 				Write-Output "WakeOnLan state set to $($CurrentValue)"
-				
 			}
 			else
 			{
-				
 				Write-Output "WakeOnLan was already set to $($WakeOnLanState.CurrentValue)"
-				
 			}
 		}
-		
 		else
 		{
-			
 			Write-Output 'Dell PowerShell Provider Module not installed'
-			
 		}
 	}
 }
